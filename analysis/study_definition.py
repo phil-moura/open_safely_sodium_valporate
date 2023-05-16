@@ -1,5 +1,9 @@
 from cohortextractor import StudyDefinition, patients, codelist, codelist_from_csv  # NOQA
 
+teratogenic_drug_codes = codelist_from_csv(
+    "codelists/opensafely-teratogenic-medicines.csv",
+    system="snomed",
+    column="dmd_id")
 
 study = StudyDefinition(
     default_expectations={
@@ -23,5 +27,36 @@ study = StudyDefinition(
             "rate": "universal",
             "int": {"distribution": "population_ages"},
         }
-    )
+    ),
+
+    sex=patients.sex(
+        return_expectations={
+            "rate": "universal",
+            "category": {"ratios": {"M": 0.49, "F": 0.51}},
+        }
+    ),
+
+    example=patients.with_these_medications(
+        teratogenic_drug_codes,
+        return_expectations={
+           "int": {"distribution": "normal", "mean": 2, "stddev": 1},
+           "incidence": 0.2,
+        },
+        on_or_before=None,
+        on_or_after=None,
+        between=None,
+        find_first_match_in_period=None,
+        find_last_match_in_period=None,
+        returning='binary_flag',
+        include_date_of_match=True,
+        date_format=None,
+        ignore_days_where_these_clinical_codes_occur=None,
+        episode_defined_as=None,
+        return_binary_flag=None,
+        return_number_of_matches_in_period=False,
+        return_first_date_in_period=False,
+        return_last_date_in_period=False,
+        include_month=False,
+        include_day=False)
+
 )

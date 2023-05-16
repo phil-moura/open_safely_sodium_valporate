@@ -1,3 +1,10 @@
 {
-  "files": {}
+  "files": {
+    "opensafely-teratogenic-medicines.csv": {
+      "id": "opensafely/teratogenic-medicines/49f7459b",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/teratogenic-medicines/49f7459b/",
+      "downloaded_at": "2023-05-16 14:36:41.059885Z",
+      "sha": "1003c76a1ab7179d8484638baaa24fae0686605f"
+    }
+  }
 }
