@@ -5,6 +5,8 @@ teratogenic_drug_codes = codelist_from_csv(
     system="snomed",
     column="dmd_id")
 
+as_of_date = "2019-09-01"
+
 study = StudyDefinition(
     default_expectations={
         "date": {"earliest": "1900-01-01", "latest": "today"},
@@ -22,7 +24,7 @@ study = StudyDefinition(
     # I expect every patient to have an age that matches 
     # the UK population
     age=patients.age_as_of(
-        "2019-09-01",
+        as_of_date,
         return_expectations={
             "rate": "universal",
             "int": {"distribution": "population_ages"},
@@ -36,7 +38,17 @@ study = StudyDefinition(
         }
     ),
 
-    example=patients.with_these_medications(
+    imd=patients.address_as_of(
+        as_of_date,
+        returning="index_of_multiple_deprivation",
+        round_to_nearest=100,
+        return_expectations={
+            "rate": "universal",
+            "category": {"ratios": {"100": 0.1, "200": 0.2, "300": 0.7}},
+        }
+    ),
+
+    teratogenics=patients.with_these_medications(
         teratogenic_drug_codes,
         return_expectations={
            "int": {"distribution": "normal", "mean": 2, "stddev": 1},
@@ -44,10 +56,10 @@ study = StudyDefinition(
         },
         on_or_before=None,
         on_or_after=None,
-        between=None,
+        between=["2010-04-01", "2023-03-31"],
         find_first_match_in_period=None,
         find_last_match_in_period=None,
-        returning='binary_flag',
+        returning="number_of_matches_in_period",
         include_date_of_match=True,
         date_format=None,
         ignore_days_where_these_clinical_codes_occur=None,
