@@ -1,5 +1,8 @@
 import pandas as pd
 import seaborn as sns
+import statsmodels.api as sm
+import scipy.stats as stats
+from matplotlib import pyplot as plt
 
 data = pd.read_csv("output/input.csv.gz")
 
